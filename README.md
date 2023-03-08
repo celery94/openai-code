@@ -1,71 +1,39 @@
-# openai-code README
+# OpenAI Code Assistant
 
-This is the README for your extension "openai-code". After writing up a brief description, we recommend including the following sections.
+OpenAI Code Assistant is a VS Code extension that provides AI-powered code suggestions to help developers write code more efficiently.
 
-## Features
+## Installation
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+To install the OpenAI Code Assistant extension, follow these steps:
 
-For example if there is an image subfolder under your extension project workspace:
+- Open VS Code.
+- Click on the Extensions icon on the left sidebar.
+- Search for "OpenAI Code Assistant" in the search bar.
+- Click on the Install button.
+- Once installed, you will need to authenticate with OpenAI by entering an API key.
 
-\!\[feature X\]\(images/feature-x.png\)
+## Usage
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+After installing the OpenAI Code Assistant extension and authenticating with OpenAI, you can start using it by typing code in your editor. The extension will analyze your code and provide suggestions in a pop-up window.
 
-## Requirements
+To view the suggestions, press the Ctrl + Space keys on Windows or the Cmd + Space keys on Mac. You can also click on the lightbulb icon that appears next to your code to view suggestions.
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+The extension can provide suggestions for various programming languages, including Python, JavaScript, and TypeScript.
 
-## Extension Settings
+## Configuration
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+The OpenAI Code Assistant extension can be configured by accessing the extension settings. To access the settings, click on the gear icon in the lower left corner of VS Code and select "Settings".
 
-For example:
+In the settings, you can configure the following options:
 
-This extension contributes the following settings:
+- openai.apiKey: The API key used to authenticate with OpenAI. This can be obtained from the OpenAI website.
+- openai.maxSuggestions: The maximum number of suggestions to display in the pop-up window.
+- openai.model: The model to use for generating suggestions. This can be set to "davinci" for the most advanced AI model or "curie" for a more lightweight model.
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## Support
 
-## Known Issues
+If you encounter any issues with the OpenAI Code Assistant extension, please open a GitHub issue in the extension's repository or contact OpenAI support directly.
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+## Contributing
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+Contributions to the OpenAI Code Assistant extension are welcome! If you would like to contribute, please see the CONTRIBUTING.md file in the extension's repository for guidelines on how to get started.

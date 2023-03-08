@@ -1,8 +1,9 @@
 {
   "name": "openai-code",
-  "displayName": "openai-code",
+  "displayName": "OpenAI Code Assistant",
   "description": "",
   "version": "0.0.1",
+  "publisher": "Celery Liu",
   "engines": {
     "vscode": "^1.76.0"
   },
@@ -14,10 +15,31 @@
   "contributes": {
     "commands": [
       {
-        "command": "openai-code.helloWorld",
-        "title": "Hello World"
+        "command": "openai-code.refactorCode",
+        "title": "OpenAI Code Assistant - Refactor Code"
+      },
+      {
+        "command": "openai-code.implementTodo",
+        "title": "OpenAI Code Assistant - Implement TODO"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "OpenAI Code Assistant",
+      "type": "object",
+      "properties": {
+        "openAICode.apiKey": {
+          "type": "string",
+          "description": "The key is used to access your Open AI API.",
+          "order": 1
+        },
+        "openAICode.endpoint": {
+          "type": "string",
+          "description": "The endpoint is used to access your Open AI API.",
+          "order": 2,
+          "default": "https://api.openai.com/v1/completions"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
@@ -31,19 +53,22 @@
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
-    "@types/vscode": "^1.76.0",
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "16.x",
+    "@types/vscode": "^1.76.0",
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
+    "@vscode/test-electron": "^2.2.3",
     "eslint": "^8.34.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
-    "typescript": "^4.9.5",
     "ts-loader": "^9.4.2",
+    "typescript": "^4.9.5",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1",
-    "@vscode/test-electron": "^2.2.3"
+    "webpack-cli": "^5.0.1"
+  },
+  "dependencies": {
+    "axios": "^1.3.4"
   }
 }
