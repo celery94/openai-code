@@ -1,28 +1,65 @@
 {
   "name": "openai-code",
-  "displayName": "OpenAI Code Assistant",
+  "displayName": "OpenAI Code Chat Assistant",
   "description": "",
   "version": "0.0.1",
-  "publisher": "Celery Liu",
+  "publisher": "celeryliu94",
+  "license": "MIT",
+  "icon": "resources/extensionIcon.png",
+  "repository": {
+    "url": "https://github.com/celery94/openai-code"
+  },
   "engines": {
     "vscode": "^1.76.0"
   },
   "categories": [
     "Other"
   ],
+  "keywords": [
+    "copilot",
+    "openai",
+    "ai",
+    "explain",
+    "find bugs",
+    "explain ",
+    "refactor"
+  ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
+        "command": "openai-code.addComments",
+        "title": "OpenAI Code Assistant - Add Comments"
+      },
+      {
         "command": "openai-code.refactorCode",
         "title": "OpenAI Code Assistant - Refactor Code"
       },
       {
-        "command": "openai-code.implementTodo",
-        "title": "OpenAI Code Assistant - Implement TODO"
+        "command": "openai-code.askToAI",
+        "title": "OpenAI Code Assistant - Ask to AI"
       }
     ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "openai-code.askToAI",
+          "when": "editorHasSelection",
+          "group": "openai-code-menu-group@0"
+        },
+        {
+          "command": "openai-code.addComments",
+          "when": "editorHasSelection",
+          "group": "openai-code-menu-group@1"
+        },
+        {
+          "command": "openai-code.refactorCode",
+          "when": "editorHasSelection",
+          "group": "openai-code-menu-group@2"
+        }
+      ]
+    },
     "configuration": {
       "title": "OpenAI Code Assistant",
       "type": "object",

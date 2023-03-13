@@ -8,6 +8,22 @@ import * as vscode from "vscode";
 export function activate(context: vscode.ExtensionContext) {
   let editor = vscode.window.activeTextEditor;
 
+  const document = editor!.document;
+  const languageId = document.languageId;
+  console.log("Language ID: " + languageId);
+
+  let addComments = vscode.commands.registerCommand("openai-code.addComments", () => {
+    sendRequest("Add Documentation comments to the code (" + languageId + "):").then((response) => {
+      if (!response) {
+        return;
+      }
+
+      editor!.edit((editBuilder) => {
+        editBuilder.replace(editor!.selection, response!);
+      });
+    });
+  });
+
   let refactorCode = vscode.commands.registerCommand("openai-code.refactorCode", () => {
     sendRequest("Refactor this code and use comment explain what's changed:").then((response) => {
       if (!response) {
@@ -31,7 +47,24 @@ export function activate(context: vscode.ExtensionContext) {
     });
   });
 
-  context.subscriptions.push(refactorCode, addComment);
+  let askToAI = vscode.commands.registerCommand("openai-code.askToAI", () => {
+    // Pop up a dialog to ask to AI
+    vscode.window.showInputBox({ prompt: "What do you want to do?" }).then((value) => {
+      if (!value) {
+        return;
+      }
+      sendRequest(value).then((response) => {
+        if (!response) {
+          return;
+        }
+        editor!.edit((editBuilder) => {
+          editBuilder.insert(editor!.selection.active, response!);
+        });
+      });
+    });
+  });
+
+  context.subscriptions.push(addComments, refactorCode, addComment, askToAI);
 }
 
 async function sendRequest(promptPrefix: string) {
@@ -79,9 +112,15 @@ async function sendRequest(promptPrefix: string) {
     },
   };
 
-  const response = await axios.post(endpoint, postData, requestConfig);
-  console.log(response.data);
+  let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
+  statusBarItem.text = "请求中...";
+  statusBarItem.show();
 
+  const response = await axios.post(endpoint, postData, requestConfig);
+
+  statusBarItem.hide();
+
+  console.log(response.data);
   //return the response
   const text = response.data.choices[0].text as string;
 
