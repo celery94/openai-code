@@ -4,20 +4,19 @@
 # https://aka.ms/yaml
 
 trigger:
-  branches:
-    include:
-    - main
   tags:
     include:
-    - refs/tags/v*
+      - refs/tags/v*
 
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- bash: |
-    echo ">>> Publish"
-    yarn deploy
-  displayName: Publish
-  env:
-    VSCE_PAT: $(VSCE_PAT)
+  - bash: |
+      npm install
+      npm run compile
+      echo ">>> Publish"
+      npm run deploy
+    displayName: Publish
+    env:
+      VSCE_PAT: $(VSCE_PAT)
