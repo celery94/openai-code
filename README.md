@@ -1,6 +1,6 @@
-# OpenAI Code Assistant
+# OpenAI Code Chat Assistant
 
-OpenAI Code Assistant is a VS Code extension that provides AI-powered code suggestions to help developers write code more efficiently.
+OpenAI Code Chat Assistant is a VS Code extension that provides AI-powered code suggestions to help developers write code more efficiently.
 
 ## Features
 

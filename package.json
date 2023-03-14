@@ -30,11 +30,11 @@
     "commands": [
       {
         "command": "openai-code.addComments",
-        "title": "OpenAI Code Assistant - Add Comments"
+        "title": "OpenAI Code Chat Assistant - Add Comments"
       },
       {
         "command": "openai-code.refactorCode",
-        "title": "OpenAI Code Assistant - Refactor Code"
+        "title": "OpenAI Code Chat Assistant - Refactor Code"
       }
     ],
     "menus": {
@@ -52,7 +52,7 @@
       ]
     },
     "configuration": {
-      "title": "OpenAI Code Assistant",
+      "title": "OpenAI Code Chat Assistant",
       "type": "object",
       "properties": {
         "openAICode.apiKey": {
