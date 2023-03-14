@@ -10,4 +10,4 @@ OpenAI Code Assistant is a VS Code extension that provides AI-powered code sugge
 
 ## Limitations
 
-- Only work with Microsoft Azure OpenAI API
+- Only work with Microsoft Azure OpenAI `gpt-35-turbo` Model deployment

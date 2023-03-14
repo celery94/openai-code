@@ -35,19 +35,10 @@
       {
         "command": "openai-code.refactorCode",
         "title": "OpenAI Code Assistant - Refactor Code"
-      },
-      {
-        "command": "openai-code.askToAI",
-        "title": "OpenAI Code Assistant - Ask to AI"
       }
     ],
     "menus": {
       "editor/context": [
-        {
-          "command": "openai-code.askToAI",
-          "when": "editorHasSelection",
-          "group": "openai-code-menu-group@0"
-        },
         {
           "command": "openai-code.addComments",
           "when": "editorHasSelection",
@@ -73,7 +64,7 @@
           "type": "string",
           "description": "The endpoint is used to access your Open AI API.",
           "order": 2,
-          "default": "https://api.openai.com/v1/completions"
+          "default": "https://TODO.openai.azure.com/openai/deployments/gpt-35-turbo/completions?api-version=2022-12-01"
         }
       }
     }
