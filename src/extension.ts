@@ -10,7 +10,8 @@ export function activate(context: vscode.ExtensionContext) {
 
   const document = editor!.document;
   const languageId = document.languageId;
-  console.log("Language ID: " + languageId);
+
+  let panel: vscode.WebviewPanel | undefined = undefined;
 
   let addComments = vscode.commands.registerCommand("openai-code.addComments", () => {
     sendRequest("Add Documentation comments to the code (" + languageId + "):").then((response) => {
@@ -38,19 +39,45 @@ export function activate(context: vscode.ExtensionContext) {
 
   let askToAI = vscode.commands.registerCommand("openai-code.askToAI", () => {
     // Create and show a new webview
-    const panel = vscode.window.createWebviewPanel(
-      'chatCoding', // Identifies the type of the webview. Used internally
-      'Chat Coding', // Title of the panel displayed to the user
-      vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
-      {} // Webview options. More on these later.
-    );
-    panel.webview.html = getWebviewContent();
+    if (!panel) {
+      panel = vscode.window.createWebviewPanel(
+        'chatCoding', // Identifies the type of the webview. Used internally
+        'Chat Coding', // Title of the panel displayed to the user
+        vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
+        {} // Webview options. More on these later.
+      );
+    }
+    const selectionText = editor!.document.getText(editor!.selection);
+
+    panel.webview.html = getWebviewContent(htmlEscape(selectionText));
+
+    sendRequest("Explain this code:").then((response) => {
+      if (!response) {
+        return;
+      }
+
+      panel!.webview.postMessage({ response });
+    });
   });
 
   context.subscriptions.push(addComments, refactorCode, askToAI);
 }
 
-function getWebviewContent() {
+function htmlEscape(str: string) {
+  return str.replace(/[&<>'"]/g, (tag) => {
+    const map: any = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      "'": '&#39;',
+      '"': '&quot;'
+    };
+    return map[tag] || tag;
+  });
+}
+
+
+function getWebviewContent(code: string) {
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,7 +86,26 @@ function getWebviewContent() {
     <title>Cat Coding</title>
 </head>
 <body>
-    <img src="https://media.giphy.com/media/JIX9t2j0ZTN9S/giphy.gif" width="300" />
+  <h5>Select Content:</h5>
+  <pre>
+    <code>
+      ${code}
+    </code>
+  </pre>
+  <h5>Explain from OpenAI Code Chat Assistant:</h5>
+  <p id="result"></p>
+  <script>
+  const result = document.getElementById('result');
+
+  // Handle the message inside the webview
+  window.addEventListener('message', event => {
+
+      const message = event.data; // The JSON data our extension sent
+
+      result.innerHTML = message.response;
+      }
+  });
+  </script>
 </body>
 </html>`;
 }

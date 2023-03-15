@@ -35,6 +35,10 @@
       {
         "command": "openai-code.refactorCode",
         "title": "OpenAI Code Chat Assistant - Refactor Code"
+      },
+      {
+        "command": "openai-code.askToAI",
+        "title": "OpenAI Code Chat Assistant - Ask to AI"
       }
     ],
     "menus": {
@@ -48,6 +52,11 @@
           "command": "openai-code.refactorCode",
           "when": "editorHasSelection",
           "group": "openai-code-menu-group@2"
+        },
+        {
+          "command": "openai-code.askToAI",
+          "when": "editorHasSelection",
+          "group": "openai-code-menu-group@3"
         }
       ]
     },
