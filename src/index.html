@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenAI Code Chat Assistant</title>
+</head>
+
+<body>
+  <h5>Select Content:</h5>
+  <pre><code class="hljs">{{code}}</code></pre>
+  <h5>Explain from OpenAI Code Chat Assistant:</h5>
+  <p id="result"></p>
+  <script>
+    (function () {
+      const result = document.getElementById('result');
+
+      window.addEventListener('message', event => {
+        const message = event.data;
+        result.innerHTML = message.response
+      })
+
+      const vscode = acquireVsCodeApi();
+      vscode.postMessage({
+        msg: 'init',
+      })
+    }())
+  </script>
+</body>
+
+</html>
