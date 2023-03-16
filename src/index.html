@@ -6,13 +6,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OpenAI Code Chat Assistant</title>
   <link rel="stylesheet" href="%s">
+  <!-- <link rel="stylesheet" href="../media/bulma.min.css"> -->
+  <style>
+    html,
+    body,
+    .container {
+      height: 100%;
+    }
+  </style>
 </head>
 
 <body>
-  <div class="container is-max-desktop">
-    <div class="box">
+  <div class="container is-flex is-flex-direction-column">
+    <div class="box is-flex-grow-1" style="overflow-y: auto;">
       <div class="messages">
-        <div class="message">
+        <div class="message is-small">
           <div class="message-header">
             <p>Selection Content:</p>
           </div>
@@ -20,27 +28,32 @@
             <pre><code>%s</code></pre>
           </div>
         </div>
-        <div class="message is-mine">
+        <div class="message is-small is-info">
           <div class="message-header">
-            <p>Explain from OpenAI Code Chat Assistant:</p>
+            <p>Response from OpenAI Code Chat Assistant:</p>
           </div>
           <div class="message-body" id="result">
-            Loading...
+
           </div>
         </div>
       </div>
-      <!-- <div class="field is-grouped">
+
+    </div>
+
+    <div class="box">
+      <div class="field is-grouped">
         <div class="control is-expanded">
-          <input class="input" type="text" placeholder="Type a message...">
+          <input class="input" type="text" placeholder="Type a message..." value="Explain this code">
         </div>
         <div class="control">
-          <button class="button is-primary">Send</button>
+          <button class="button is-primary" onclick="send()">Send</button>
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 
   <script>
+    const vscode = acquireVsCodeApi();
     (function () {
       const result = document.getElementById('result');
 
@@ -48,12 +61,13 @@
         const message = event.data;
         result.innerHTML = message.response
       })
-
-      const vscode = acquireVsCodeApi();
-      vscode.postMessage({
-        msg: 'init',
-      })
     }())
+
+    function send() {
+      vscode.postMessage({
+        msg: document.querySelector('input').value,
+      })
+    }
   </script>
 </body>
 
