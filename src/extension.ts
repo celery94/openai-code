@@ -4,6 +4,7 @@ import axios from "axios";
 import * as vscode from "vscode";
 import * as path from "path";
 import * as fs from "fs";
+import * as util from "util";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -41,18 +42,20 @@ export function activate(context: vscode.ExtensionContext) {
     // Create and show a new webview
     const panel = vscode.window.createWebviewPanel(
       "chatCoding", // Identifies the type of the webview. Used internally
-      "Chat Coding", // Title of the panel displayed to the user
+      "OpenAI Code Chat Assistant", // Title of the panel displayed to the user
       vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
       } // Webview options. More on these later.
     );
+
+    const bulma = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, 'media', 'bulma.min.css'));
     const selectionText = editor!.document.getText(editor!.selection);
 
     const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, "src", "index.html"));
     const fileContent = fs.readFileSync(filePath.fsPath, "utf8");
 
-    panel.webview.html = fileContent.replace("{{code}}", htmlEscape(selectionText));
+    panel.webview.html = util.format(fileContent, bulma, htmlEscape(selectionText));
     panel.webview.onDidReceiveMessage(
       (message) => {
         console.log(message);
@@ -140,9 +143,17 @@ async function sendRequest(promptPrefix: string, selectionText: string = "") {
   statusBarItem.text = "Processing...";
   statusBarItem.show();
 
-  const response = await axios.post(endpoint, postData, requestConfig);
-
-  statusBarItem.hide();
+  let response: any;
+  try {
+    response = await axios.post(endpoint, postData, requestConfig);
+  } catch (error) {
+    console.error(error);
+    vscode.window.showErrorMessage("Error: " + error);
+    return;
+  }
+  finally {
+    statusBarItem.hide();
+  }
 
   console.log(response.data);
   //return the response
@@ -152,4 +163,4 @@ async function sendRequest(promptPrefix: string, selectionText: string = "") {
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

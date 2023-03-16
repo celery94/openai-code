@@ -5,13 +5,41 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>OpenAI Code Chat Assistant</title>
+  <link rel="stylesheet" href="%s">
 </head>
 
 <body>
-  <h5>Select Content:</h5>
-  <pre><code class="hljs">{{code}}</code></pre>
-  <h5>Explain from OpenAI Code Chat Assistant:</h5>
-  <p id="result"></p>
+  <div class="container is-max-desktop">
+    <div class="box">
+      <div class="messages">
+        <div class="message">
+          <div class="message-header">
+            <p>Selection Content:</p>
+          </div>
+          <div class="message-body">
+            <pre><code>%s</code></pre>
+          </div>
+        </div>
+        <div class="message is-mine">
+          <div class="message-header">
+            <p>Explain from OpenAI Code Chat Assistant:</p>
+          </div>
+          <div class="message-body" id="result">
+            Loading...
+          </div>
+        </div>
+      </div>
+      <!-- <div class="field is-grouped">
+        <div class="control is-expanded">
+          <input class="input" type="text" placeholder="Type a message...">
+        </div>
+        <div class="control">
+          <button class="button is-primary">Send</button>
+        </div>
+      </div> -->
+    </div>
+  </div>
+
   <script>
     (function () {
       const result = document.getElementById('result');
