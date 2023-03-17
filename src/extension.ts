@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     const bulma = panel.webview.asWebviewUri(vscode.Uri.joinPath(context.extensionUri, "media", "bulma.min.css"));
     const selectionText = editor!.document.getText(editor!.selection);
 
-    const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, "src", "index.html"));
+    const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, "media", "index.html"));
     const fileContent = fs.readFileSync(filePath.fsPath, "utf8");
 
     panel.webview.html = util.format(fileContent, bulma, htmlEscape(selectionText));
