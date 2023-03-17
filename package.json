@@ -2,7 +2,7 @@
   "name": "openai-code",
   "displayName": "OpenAI Code Chat Assistant",
   "description": "",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "celeryliu94",
   "license": "MIT",
   "icon": "resources/extensionIcon.png",
@@ -38,7 +38,7 @@
         {
           "command": "openai-code.askToAI",
           "when": "editorHasSelection",
-          "group": "openai-code-menu-group@3"
+          "group": "openai-code-menu-group@1"
         }
       ]
     },

@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
             const converter = new showdown.Converter();
             const html = converter.makeHtml(response);
 
-            panel!.webview.postMessage({ response: html });
+            panel!.webview.postMessage({ prompt: message.msg, response: html });
           });
         }
       },
@@ -81,7 +81,7 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
     return;
   }
 
-  const systemStart = `<|im_start|>system\nYou are an AI assistant that helps people find information.
+  const systemStart = `<|im_start|>system\nYou are an AI assistant that helps people in programming.
     Here is a ${languageId} snippet :
     ${selectionText}
     <|im_end|>\n`;
@@ -126,4 +126,4 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
 }
 
 // This method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

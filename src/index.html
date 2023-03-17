@@ -19,21 +19,13 @@
 <body>
   <div class="container is-flex is-flex-direction-column">
     <div class="box is-flex-grow-1" style="overflow-y: auto;">
-      <div class="messages">
+      <div class="messages" id="result">
         <div class="message is-small">
           <div class="message-header">
-            <p>Selection Content:</p>
+            <p>Selection Content</p>
           </div>
           <div class="message-body">
             <pre><code>%s</code></pre>
-          </div>
-        </div>
-        <div class="message is-small is-info">
-          <div class="message-header">
-            <p>Response from OpenAI Code Chat Assistant:</p>
-          </div>
-          <div class="message-body" id="result">
-
           </div>
         </div>
       </div>
@@ -42,11 +34,28 @@
 
     <div class="box">
       <div class="field is-grouped">
+        <p class="control">
+          <button class="button is-link is-small" onclick="send('Explain this code')">
+            Explain
+          </button>
+        </p>
+        <p class="control">
+          <button class="button is-link is-small" onclick="send('Refactor this code')">
+            Refactor
+          </button>
+        </p>
+        <p class="control">
+          <button class="button is-link is-small" onclick="send('Add Documentation comments to the code')">
+            Add Documentation
+          </button>
+        </p>
+      </div>
+      <div class="field is-grouped">
         <div class="control is-expanded">
-          <input class="input" type="text" placeholder="Type a message..." value="Explain this code">
+          <input class="input" type="text" placeholder="Type a message here...">
         </div>
         <div class="control">
-          <button class="button is-primary" onclick="send()">Send</button>
+          <button class="button is-primary" onclick="query()">Send</button>
         </div>
       </div>
     </div>
@@ -58,14 +67,37 @@
       const result = document.getElementById('result');
 
       window.addEventListener('message', event => {
+        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+
         const message = event.data;
-        result.innerHTML = message.response
+        result.innerHTML = result.innerHTML +
+          `<div class="message is-small is-info">
+          <div class="message-header">
+            <p>${message.prompt}</p>
+          </div>
+          <div class="message-body" id="result">
+            ${message.response}
+          </div>
+        </div>`
       })
     }())
 
-    function send() {
+    function send(msg) {
+      document.querySelectorAll('button').forEach(btn => btn.disabled = true);
       vscode.postMessage({
-        msg: document.querySelector('input').value,
+        msg: msg,
+      })
+    }
+
+    function query() {
+      const msg = document.querySelector('input').value;
+      if (!msg) return;
+
+      //disable all buttons
+      document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
+      vscode.postMessage({
+        msg: msg,
       })
     }
   </script>
