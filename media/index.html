@@ -68,6 +68,7 @@
 
       window.addEventListener('message', event => {
         document.querySelectorAll('button').forEach(btn => btn.disabled = false);
+        document.querySelector('input').value = '';
 
         const message = event.data;
         result.innerHTML = result.innerHTML +

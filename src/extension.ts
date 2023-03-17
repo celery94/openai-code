@@ -81,10 +81,20 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
     return;
   }
 
-  const systemStart = `<|im_start|>system\nYou are an AI assistant that helps people in programming.
+  let systemStart;
+  //check if the language is programming
+  if (languageId === "markdown" || languageId === "plaintext") {
+    systemStart = `<|im_start|>system\nYou are an AI assistant that helps people find information.
+    Here is a snipper:
+    ${selectionText}
+    <|im_end|>\n`;
+  }
+  else {
+    systemStart = `<|im_start|>system\nYou are an AI assistant that helps people in programming.
     Here is a ${languageId} snippet :
     ${selectionText}
     <|im_end|>\n`;
+  }
 
   let postData = {
     prompt: `${systemStart}<|im_start|>user\n${userQuery}\n<|im_end|>\n<|im_start|>assistant`,
