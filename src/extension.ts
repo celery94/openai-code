@@ -81,37 +81,19 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
     return;
   }
 
-  let systemStart;
-  //check if the language is programming
-  if (languageId === "markdown" || languageId === "plaintext") {
-    systemStart = `<|im_start|>system\nYou are an AI assistant that helps people find information.
-    Here is a snipper:
-    ${selectionText}
-    <|im_end|>\n`;
-  }
-  else {
-    systemStart = `<|im_start|>system\nYou are an AI assistant that helps people in programming.
-    Here is a ${languageId} snippet :
-    ${selectionText}
-    <|im_end|>\n`;
-  }
+  const systemQuery =
+    languageId === "markdown" || languageId === "plaintext"
+      ? `You are an AI assistant that helps people find information.
+        Here is a snipper:
+        ${selectionText}`
+      : `You are an AI assistant that helps people in programming.
+        Here is a ${languageId} snippet :
+        ${selectionText}`;
 
-  let postData = {
-    prompt: `${systemStart}<|im_start|>user\n${userQuery}\n<|im_end|>\n<|im_start|>assistant`,
-    temperature: 0.5,
-    top_p: 0.95,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    max_tokens: 800,
-    stop: ["<|im_end|>"],
-  };
-
-  let requestConfig = {
-    headers: {
-      "Content-Type": "application/json",
-      "api-key": apiKey,
-    },
-  };
+  const isOpenAI = endpoint === "https://api.openai.com/v1/chat/completions";
+  let { postData, requestConfig } = isOpenAI
+    ? prepareOpenAiChatRequest(systemQuery, userQuery, apiKey)
+    : prepareAzureRequest(systemQuery, userQuery, apiKey);
 
   let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   statusBarItem.text = "Processing...";
@@ -130,10 +112,53 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
 
   console.log(response.data);
   //return the response
-  const text = response.data.choices[0].text as string;
+  const text = isOpenAI
+    ? (response.data.choices[0].message.content as string)
+    : (response.data.choices[0].text as string);
 
   return text.trim();
 }
 
+function prepareOpenAiChatRequest(systemConfig: string, userQuery: string, apiKey: string) {
+  let postData = {
+    model: "gpt-3.5-turbo",
+    messages: [
+      {
+        role: "system",
+        content: systemConfig,
+      },
+      {
+        role: "user",
+        content: userQuery,
+      },
+    ],
+  };
+
+  let requestConfig = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+  };
+  return { postData, requestConfig };
+}
+
+function prepareAzureRequest(systemConfig: string, userQuery: string, apiKey: string) {
+  let postData = {
+    prompt: `<|im_start|>system\n${systemConfig}\n<|im_end|>\n<|im_start|>user\n${userQuery}\n<|im_end|>\n<|im_start|>assistant`,
+    temperature: 1,
+    max_tokens: 4000,
+    stop: ["<|im_end|>"],
+  };
+
+  let requestConfig = {
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": apiKey,
+    },
+  };
+  return { postData, requestConfig };
+}
+
 // This method is called when your extension is deactivated
-export function deactivate() { }
+export function deactivate() {}

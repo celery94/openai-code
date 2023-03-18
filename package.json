@@ -2,7 +2,7 @@
   "name": "openai-code",
   "displayName": "OpenAI Code Chat Assistant",
   "description": "",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "publisher": "celeryliu94",
   "license": "MIT",
   "icon": "resources/openai-code-chat-assistant.png",
@@ -55,7 +55,7 @@
           "type": "string",
           "description": "The endpoint is used to access your Open AI API.",
           "order": 2,
-          "default": "https://TODO.openai.azure.com/openai/deployments/gpt-35-turbo/completions?api-version=2022-12-01"
+          "default": "https://api.openai.com/v1/chat/completions"
         }
       }
     }

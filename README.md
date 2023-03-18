@@ -11,4 +11,5 @@ OpenAI Code Chat Assistant is a VS Code extension that provides AI-powered code 
 
 ## Limitations
 
-- Only work with Microsoft Azure OpenAI `gpt-35-turbo` Model deployment
+- Work with Microsoft Azure OpenAI `gpt-35-turbo` Model deployment
+- Work with OpenAI Chat completions API
