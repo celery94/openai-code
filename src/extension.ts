@@ -7,6 +7,11 @@ import * as fs from "fs";
 import * as util from "util";
 import showdown = require("showdown");
 
+interface Message {
+  role: "user" | "system" | "assistant";
+  content: string;
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -30,14 +35,34 @@ export function activate(context: vscode.ExtensionContext) {
     const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, "media", "index.html"));
     const fileContent = fs.readFileSync(filePath.fsPath, "utf8");
 
+    const messages: Message[] = [
+      {
+        role: "system",
+        content: `You are an AI assistant that helps people find information.
+          Here is a ${languageId} snippet:
+          ${selectionText}`,
+      },
+    ];
+
     panel.webview.html = util.format(fileContent, bulma, htmlEscape(selectionText));
     panel.webview.onDidReceiveMessage(
       (message) => {
         if (message.msg) {
-          sendRequest(selectionText, languageId, message.msg).then((response) => {
+          messages.push({
+            role: "user",
+            content: message.msg,
+          });
+
+          sendRequest(messages).then((response) => {
             if (!response) {
               return;
             }
+
+            messages.push({
+              role: "assistant",
+              content: response,
+            });
+
             const converter = new showdown.Converter();
             const html = converter.makeHtml(response);
 
@@ -66,7 +91,7 @@ function htmlEscape(str: string) {
   });
 }
 
-async function sendRequest(selectionText: string, languageId: string, userQuery: string) {
+async function sendRequest(messages: Message[]) {
   const config = vscode.workspace.getConfiguration("openAICode");
   const apiKey = config.get("apiKey") as string | undefined;
   const endpoint = config.get("endpoint") as string | undefined;
@@ -80,20 +105,12 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
     vscode.window.showErrorMessage("Please set the endpoint in the settings.");
     return;
   }
-
-  const systemQuery =
-    languageId === "markdown" || languageId === "plaintext"
-      ? `You are an AI assistant that helps people find information.
-        Here is a snipper:
-        ${selectionText}`
-      : `You are an AI assistant that helps people in programming.
-        Here is a ${languageId} snippet :
-        ${selectionText}`;
+  console.log(messages);
 
   const isOpenAI = endpoint === "https://api.openai.com/v1/chat/completions";
   let { postData, requestConfig } = isOpenAI
-    ? prepareOpenAiChatRequest(systemQuery, userQuery, apiKey)
-    : prepareAzureRequest(systemQuery, userQuery, apiKey);
+    ? prepareOpenAiChatRequest(messages, apiKey)
+    : prepareAzureRequest(messages, apiKey);
 
   let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   statusBarItem.text = "Processing...";
@@ -119,19 +136,10 @@ async function sendRequest(selectionText: string, languageId: string, userQuery:
   return text.trim();
 }
 
-function prepareOpenAiChatRequest(systemConfig: string, userQuery: string, apiKey: string) {
+function prepareOpenAiChatRequest(messages: Message[], apiKey: string) {
   let postData = {
     model: "gpt-3.5-turbo",
-    messages: [
-      {
-        role: "system",
-        content: systemConfig,
-      },
-      {
-        role: "user",
-        content: userQuery,
-      },
-    ],
+    messages: messages,
   };
 
   let requestConfig = {
@@ -143,9 +151,11 @@ function prepareOpenAiChatRequest(systemConfig: string, userQuery: string, apiKe
   return { postData, requestConfig };
 }
 
-function prepareAzureRequest(systemConfig: string, userQuery: string, apiKey: string) {
+function prepareAzureRequest(messages: Message[], apiKey: string) {
+  const prompt = messages.map((m) => `<|im_start|>${m.role}\n${m.content}\n<|im_end|>`).join("\n");
+
   let postData = {
-    prompt: `<|im_start|>system\n${systemConfig}\n<|im_end|>\n<|im_start|>user\n${userQuery}\n<|im_end|>\n<|im_start|>assistant`,
+    prompt: `${prompt}\n<|im_start|>assistant`,
     temperature: 1,
     max_tokens: 4000,
     stop: ["<|im_end|>"],

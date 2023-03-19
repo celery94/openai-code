@@ -8,6 +8,8 @@ OpenAI Code Chat Assistant is a VS Code extension that provides AI-powered code 
 - Code refactoring
 - Code completion
 - Custom query for selection
+- Keep conversation in the chat window
+  > TODO display token cost of current conversation
 
 ## Limitations
 
