@@ -9,7 +9,12 @@ import showdown = require("showdown");
 
 interface Message {
   role: "user" | "system" | "assistant";
-  content: string;
+  content: Content[];
+}
+
+interface Content {
+  type: "text" | "image" | "code";
+  text: string;
 }
 
 // This method is called when your extension is activated
@@ -18,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
   let editor = vscode.window.activeTextEditor;
   const languageId = editor!.document.languageId;
 
-  let askToAI = vscode.commands.registerCommand("openai-code.askToAI", () => {
+  let askToAI = vscode.commands.registerCommand("openai-code.generatePrototype", () => {
     // Create and show a new webview
     const panel = vscode.window.createWebviewPanel(
       "chatCoding", // Identifies the type of the webview. Used internally
@@ -38,10 +43,15 @@ export function activate(context: vscode.ExtensionContext) {
     const messages: Message[] = [
       {
         role: "system",
-        content: `This GPT assists users by generating Angular, Material Design, and TailwindCSS web interface prototypes based on user requirements. 
+        content: [
+          {
+            type: "text",
+            text: `This GPT assists users by generating Angular, Material Design, and TailwindCSS web interface prototypes based on user requirements. 
         It outputs complete code for Angular components, embedding HTML and CSS within the TypeScript component file, without explaining basic steps. 
         All generated components will be named ${selectionText} and will use standalone=true. 
         The output will include only the source code without any additional explanations.`,
+          },
+        ],
       },
     ];
 
@@ -51,7 +61,12 @@ export function activate(context: vscode.ExtensionContext) {
         if (message.msg) {
           messages.push({
             role: "user",
-            content: message.msg,
+            content: [
+              {
+                type: "text",
+                text: message.msg,
+              },
+            ],
           });
 
           sendRequest(messages).then((response) => {
@@ -61,7 +76,12 @@ export function activate(context: vscode.ExtensionContext) {
 
             messages.push({
               role: "assistant",
-              content: response,
+              content: [
+                {
+                  type: "text",
+                  text: response,
+                },
+              ],
             });
 
             const converter = new showdown.Converter();
@@ -128,8 +148,7 @@ async function sendRequest(messages: Message[]) {
 
   console.log(response.data);
   //return the response
-  const text = isOpenAI ? (response.data.choices[0].message.content as string) : (response.data.choices[0].text as string);
-
+  const text = response.data.choices[0].message.content as string;
   return text.trim();
 }
 
@@ -149,13 +168,11 @@ function prepareOpenAiChatRequest(messages: Message[], apiKey: string) {
 }
 
 function prepareAzureRequest(messages: Message[], apiKey: string) {
-  const prompt = messages.map((m) => `<|im_start|>${m.role}\n${m.content}\n<|im_end|>`).join("\n");
-
   let postData = {
-    prompt: `${prompt}\n<|im_start|>assistant`,
-    temperature: 1,
-    max_tokens: 4000,
-    stop: ["<|im_end|>"],
+    messages: messages,
+    temperature: 0.7,
+    top_p: 0.95,
+    max_tokens: 4096,
   };
 
   let requestConfig = {

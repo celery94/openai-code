@@ -1,112 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Assistant Hub</title>
+    <link rel="stylesheet" href="%s" />
+    <!-- <link rel="stylesheet" href="../media/bulma.min.css"> -->
+    <style>
+      html,
+      body,
+      .container {
+        height: 100%;
+      }
+    </style>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OpenAI Code Chat Assistant</title>
-  <link rel="stylesheet" href="%s">
-  <!-- <link rel="stylesheet" href="../media/bulma.min.css"> -->
-  <style>
-    html,
-    body,
-    .container {
-      height: 100%;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container is-flex is-flex-direction-column">
-    <div class="box is-flex-grow-1" style="overflow-y: auto;">
-      <div class="messages" id="result">
-        <div class="message is-small">
-          <div class="message-header">
-            <p>Selection Content</p>
-          </div>
-          <div class="message-body">
-            <pre><code>%s</code></pre>
+  <body>
+    <div class="container is-flex is-flex-direction-column">
+      <div class="box is-flex-grow-1" style="overflow-y: auto">
+        <div class="messages" id="result">
+          <div class="message is-small">
+            <div class="message-header">
+              <p>Selection Content</p>
+            </div>
+            <div class="message-body">
+              <pre><code>%s</code></pre>
+            </div>
           </div>
         </div>
       </div>
 
-    </div>
-
-    <div class="box">
-      <div class="field is-grouped">
-        <p class="control">
-          <button class="button is-link is-small" onclick="send('Explain this code')">
-            Explain
-          </button>
-        </p>
-        <p class="control">
-          <button class="button is-link is-small" onclick="send('Refactor this code')">
-            Refactor
-          </button>
-        </p>
-        <p class="control">
-          <button class="button is-link is-small" onclick="send('Complete the current code')">
-            Completion
-          </button>
-        </p>
-        <p class="control">
-          <button class="button is-link is-small" onclick="send('Add Documentation comments to the code')">
-            Add Documentation
-          </button>
-        </p>
-      </div>
-      <div class="field is-grouped">
-        <div class="control is-expanded">
-          <input class="input" type="text" placeholder="Type a message here...">
-        </div>
-        <div class="control">
-          <button class="button is-primary" onclick="query()">Send</button>
+      <div class="box">
+        <div class="field is-grouped">
+          <div class="control is-expanded">
+            <input class="input" type="text" placeholder="Type a message here..." />
+          </div>
+          <div class="control">
+            <button class="button is-primary" onclick="query()">Send</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <script>
-    const vscode = acquireVsCodeApi();
-    (function () {
-      const result = document.getElementById('result');
+    <script>
+      const vscode = acquireVsCodeApi();
+      (function () {
+        const result = document.getElementById("result");
 
-      window.addEventListener('message', event => {
-        document.querySelectorAll('button').forEach(btn => btn.disabled = false);
-        document.querySelector('input').value = '';
+        window.addEventListener("message", (event) => {
+          document.querySelectorAll("button").forEach((btn) => (btn.disabled = false));
+          document.querySelector("input").value = "";
 
-        const message = event.data;
-        result.innerHTML = result.innerHTML +
-          `<div class="message is-small is-info">
+          const message = event.data;
+          result.innerHTML =
+            result.innerHTML +
+            `<div class="message is-small is-info">
           <div class="message-header">
             <p>${message.prompt}</p>
           </div>
           <div class="message-body" id="result">
             ${message.response}
           </div>
-        </div>`
-      })
-    }())
+        </div>`;
+        });
+      })();
 
-    function send(msg) {
-      document.querySelectorAll('button').forEach(btn => btn.disabled = true);
-      vscode.postMessage({
-        msg: msg,
-      })
-    }
+      function send(msg) {
+        document.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
+        vscode.postMessage({
+          msg: msg,
+        });
+      }
 
-    function query() {
-      const msg = document.querySelector('input').value;
-      if (!msg) return;
+      function query() {
+        const msg = document.querySelector("input").value;
+        if (!msg) return;
 
-      //disable all buttons
-      document.querySelectorAll('button').forEach(btn => btn.disabled = true);
+        //disable all buttons
+        document.querySelectorAll("button").forEach((btn) => (btn.disabled = true));
 
-      vscode.postMessage({
-        msg: msg,
-      })
-    }
-  </script>
-</body>
-
+        vscode.postMessage({
+          msg: msg,
+        });
+      }
+    </script>
+  </body>
 </html>
