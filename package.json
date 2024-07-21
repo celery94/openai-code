@@ -1,8 +1,8 @@
 {
   "name": "openai-code",
-  "displayName": "OpenAI Code Chat Assistant",
+  "displayName": "AI Assistant Hub",
   "description": "",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "publisher": "celeryliu94",
   "license": "MIT",
   "icon": "resources/openai-code-chat-assistant.png",
@@ -18,32 +18,34 @@
   "keywords": [
     "copilot",
     "openai",
-    "ai",
+    "AI",
     "explain",
     "find bugs",
     "explain ",
-    "refactor"
+    "refactor",
+    "angular",
+    "prototype"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "openai-code.askToAI",
-        "title": "OpenAI Code Chat Assistant - Ask to AI"
+        "command": "openai-code.generatePrototype",
+        "title": "AI Assistant Hub - Generate Prototype"
       }
     ],
     "menus": {
       "editor/context": [
         {
-          "command": "openai-code.askToAI",
+          "command": "openai-code.generatePrototype",
           "when": "editorHasSelection",
-          "group": "openai-code-menu-group@1"
+          "group": "openai-code-menu-group@2"
         }
       ]
     },
     "configuration": {
-      "title": "OpenAI Code Chat Assistant",
+      "title": "AI Assistant Hub",
       "type": "object",
       "properties": {
         "openAICode.apiKey": {

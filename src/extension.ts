@@ -22,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create and show a new webview
     const panel = vscode.window.createWebviewPanel(
       "chatCoding", // Identifies the type of the webview. Used internally
-      "OpenAI Code Chat Assistant", // Title of the panel displayed to the user
+      "AI Assistant Hub", // Title of the panel displayed to the user
       vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
@@ -38,9 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
     const messages: Message[] = [
       {
         role: "system",
-        content: `You are an AI assistant that helps people find information.
-          Here is a ${languageId} snippet:
-          ${selectionText}`,
+        content: `This GPT assists users by generating Angular, Material Design, and TailwindCSS web interface prototypes based on user requirements. 
+        It outputs complete code for Angular components, embedding HTML and CSS within the TypeScript component file, without explaining basic steps. 
+        All generated components will be named ${selectionText} and will use standalone=true. 
+        The output will include only the source code without any additional explanations.`,
       },
     ];
 
@@ -108,9 +109,7 @@ async function sendRequest(messages: Message[]) {
   console.log(messages);
 
   const isOpenAI = endpoint === "https://api.openai.com/v1/chat/completions";
-  let { postData, requestConfig } = isOpenAI
-    ? prepareOpenAiChatRequest(messages, apiKey)
-    : prepareAzureRequest(messages, apiKey);
+  let { postData, requestConfig } = isOpenAI ? prepareOpenAiChatRequest(messages, apiKey) : prepareAzureRequest(messages, apiKey);
 
   let statusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 100);
   statusBarItem.text = "Processing...";
@@ -129,9 +128,7 @@ async function sendRequest(messages: Message[]) {
 
   console.log(response.data);
   //return the response
-  const text = isOpenAI
-    ? (response.data.choices[0].message.content as string)
-    : (response.data.choices[0].text as string);
+  const text = isOpenAI ? (response.data.choices[0].message.content as string) : (response.data.choices[0].text as string);
 
   return text.trim();
 }
