@@ -27,7 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
     // Create and show a new webview
     const panel = vscode.window.createWebviewPanel(
       "chatCoding", // Identifies the type of the webview. Used internally
-      "AI Assistant Hub", // Title of the panel displayed to the user
+      "Prototype Genie", // Title of the panel displayed to the user
       vscode.ViewColumn.Beside, // Editor column to show the new webview panel in.
       {
         enableScripts: true,
